@@ -3,7 +3,6 @@
 var app = require('./index')
 var config = require('./config/config')
 var db = require('./config/db')
-var bodyParser = require('body-parser');
 const fs = require('fs');
 
 // Use whichever logging system you prefer.
@@ -17,10 +16,7 @@ var log = bole('server')
 
 log.info('server process starting')
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
 
 // Note that there's not much logic in this file.
 // The server should be mostly "glue" code to set things up and
