@@ -4,6 +4,8 @@ var app = require('./index')
 var config = require('./config/config')
 var db = require('./config/db')
 const fs = require('fs');
+var mongoose     = require('mongoose');
+mongoose.Promise = require('bluebird');
 
 // Use whichever logging system you prefer.
 var bole = require('bole')
@@ -29,3 +31,4 @@ app.listen(config.express.port, config.express.ip, function (error) {
   log.info('express is listening on http://' +
     config.express.ip + ':' + config.express.port)
 })
+

@@ -6,7 +6,7 @@ var log = bole('middleware');
 // middleware to use for all requests
 router.use(function(req, res, next) {
     // do logging
-    log.debug('Something is happening in the middleware');
+    
    
     next(); // make sure we go to the next routes and don't stop here
 });

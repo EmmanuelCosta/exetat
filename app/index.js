@@ -17,14 +17,15 @@ app.use( require('./middleware/middleware'))
 // Load the routes ("controllers" -ish)
 app.use(
   router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });   
+    res.json({ message: 'exetat! bienvenu!' });   
   })
 );
-app.use(require('./question/index'))
+app.use(require('./question/index'));
+app.use(require('./section/index'));
 
 
 // FINALLY, use any error handlers
-app.use(require('./errors/not-found'))
+//app.use(require('./errors/not-found'));
 
 
 
