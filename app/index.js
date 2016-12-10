@@ -22,6 +22,7 @@ app.use(
 );
 app.use(require('./question/index'));
 app.use(require('./section/index'));
+app.use(require('./subject/index'));
 
 
 // FINALLY, use any error handlers

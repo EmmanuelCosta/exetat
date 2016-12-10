@@ -37,23 +37,27 @@ router.post('/section',function(req, res) {
           if(common.isEmpty(req.body.section)){
             res.status(400) 
             log.debug("[POST]["+req.originalUrl+"]"+"the key section to parse is missing. The given is req.body.section ="+req.body.section) ;
-             res.json({ message: 'error with the urlencoded' });
-          }else if(common.isEmpty(req.body.section.name)){
+             res.json({ message: '[1] error with the urlencoded' });
+             return;
+          }
           var jsonSection = req.body.section;
           jsonSection= JSON.parse(jsonSection);
+          if(!common.isEmpty(jsonSection.name)){
+          
+          
           var section = new Section();
           section.name = jsonSection.name;        
           section.save(function(err) {         
               if (err){
                    log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving. error is : "+err) ;
-                 res.json({ message: 'unexpected error' });
+                 res.json({ message: '[2] unexpected error' });
               }else{
               res.json({ message: 'Section created!' });
             }
           });
         }else{
           log.debug("[POST]["+req.originalUrl+"]"+"the name of section to parse is missing. The given is req.body.section ="+req.body.section) ;
-          res.json({ message: 'error with the urlencoded' });
+          res.json({ message: '[3] error with the urlencoded' });
         }
 });
 
@@ -64,9 +68,10 @@ router.put('/section',function(req, res) {
             res.status(400) 
             log.debug("[PUT]["+req.originalUrl+"]"+"the key section to parse is missing. The given is req.body.section ="+req.body.section) ;
              res.json({ message: 'error with the urlencoded' });
+             return;
           }
             var jsonSection = req.body.section;
-             jsonSection= JSON.parse(jsonSection);
+            jsonSection= JSON.parse(jsonSection);
           if(common.isEmpty(jsonSection._id)||common.isEmpty(jsonSection.name)){
               res.status(400)  
             log.debug("[PUT]["+req.originalUrl+"]"+"the _id of section or the name to parse is missing. The given is req.body.section ="+req.body.section) ;

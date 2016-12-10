@@ -2,14 +2,13 @@ var mongoose = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var subjectSchema = new Schema({
-  name:{type: String, require:true},
-  item:{
-      [
-        id:ObjectId,
-        serie:{type: String, require:true},
-        year:{type:Number,require:true}
-      ]
-    }
+  name:{type: String, required:true},
+  section:[Schema.ObjectId ],
+  item:[{
+        id:Schema.ObjectId,
+        serie:{type: String, required:true},
+        year:{type:Number,required:true}
+      }]
 });
 
 module.exports=subjectSchema;
