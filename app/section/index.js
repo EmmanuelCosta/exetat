@@ -62,7 +62,7 @@ router.post('/section',function(req, res) {
 });
 
 // add the question  (accessed at PUT http://localhost:3000/api/section)
-router.put('/section',function(req, res) {                 
+router.put('/section/changeName',function(req, res) {                 
 
           if(common.isEmpty(req.body.section)){
             res.status(400) 
@@ -76,12 +76,12 @@ router.put('/section',function(req, res) {
               res.status(400)  
             log.debug("[PUT]["+req.originalUrl+"]"+"the _id of section or the name to parse is missing. The given is req.body.section ="+req.body.section) ;
              res.json({ message: 'error with the urlencoded' });
+             return;
           }else{     
 
-           retreiveSection = Section.findById(jsonSection._id, function(err, section) {
-            if (err){
-             
-                 log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
+          Section.findById(jsonSection._id, function(err, section) {
+            if (err){            
+               log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
                res.json({ message: 'unexpected error' });
             }else{ 
                section.name=jsonSection.name;
