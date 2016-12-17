@@ -29,5 +29,8 @@ exports.isEmpty=function(obj) {
 }
 
 exports.isAnArray = function(obj){
+    if(obj== null){
+        return false;
+    }
     return obj.constructor === Array;
 }

@@ -67,7 +67,7 @@ router.put('/section/changeName',function(req, res) {
           if(common.isEmpty(req.body.section)){
             res.status(400) 
             log.debug("[PUT]["+req.originalUrl+"]"+"the key section to parse is missing. The given is req.body.section ="+req.body.section) ;
-             res.json({ message: 'error with the urlencoded' });
+             res.json({ message: '[1] error with the urlencoded' });
              return;
           }
             var jsonSection = req.body.section;
@@ -75,21 +75,21 @@ router.put('/section/changeName',function(req, res) {
           if(common.isEmpty(jsonSection._id)||common.isEmpty(jsonSection.name)){
               res.status(400)  
             log.debug("[PUT]["+req.originalUrl+"]"+"the _id of section or the name to parse is missing. The given is req.body.section ="+req.body.section) ;
-             res.json({ message: 'error with the urlencoded' });
+             res.json({ message: '[2] error with the urlencoded' });
              return;
           }else{     
 
           Section.findById(jsonSection._id, function(err, section) {
             if (err){            
                log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
-               res.json({ message: 'unexpected error' });
+               res.json({ message: '[3] unexpected error' });
             }else{ 
                section.name=jsonSection.name;
                
                 section.save(function(err) {         
                     if (err){                 
                     log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
-                   res.json({ message: 'unexpected error' });
+                   res.json({ message: '[4] unexpected error' });
                     }else{
                       
                     res.json({ message: 'Section updated!'});

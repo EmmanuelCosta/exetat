@@ -6,6 +6,8 @@ var bole = require('bole');
 var log = bole('subject');
 var assert = require('assert');
 var common=require('../common/common');
+var ObjectID = require('mongodb').ObjectID;
+
 
 // get all subjects
 router.get('/subjects',function(req, res){
@@ -34,39 +36,76 @@ router.get('/subject/:subject_id',function(req, res) {
 
 // get the subject by id id (accessed at POST http://localhost:3000/api/subject/)
 router.post('/subject',function(req, res) {
-        
+        try{
           if(common.isEmpty(req.body.subject)){
             res.status(400) 
-            log.debug("[POST]["+req.originalUrl+"]"+"the key subject to parse is missing. The given is req.body.subject ="+req.body.subject) ;
+            log.info("[POST]["+req.originalUrl+"]"+"the key subject to parse is missing. The given url ="+req.body.subject) ;
              res.json({ message: 'error with the urlencoded' });
              return;
           }
           var jsonSubject = req.body.subject;
           jsonSubject= JSON.parse(jsonSubject);
            if(common.isEmpty(jsonSubject.name) ){
-            log.debug("[POST]["+req.originalUrl+"]"+"the name  o of subject to parse is missing. The given is req.body.subject ="+req.body.subject) ;
-            res.json({ message: 'error with the urlencoded' });
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the name of subject to parse is missing. The given url ="+req.body.subject) ;
+            res.json({ message: 'error with the urlencoded: name of subject to parse is missing' });
+            return;
+          }
+          if(common.isEmpty(jsonSubject.section)){
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the section of subject to parse is missing. The given url ="+req.body.subject) ;
+            res.json({ message: 'error with the urlencoded : section of subject to parse is missing' });
             return;
           }
                    
-          var subject = new Subject();
-          subject.name = jsonSubject.name;  
-          if(!common.isAnArray(jsonSubject.section)){
-             subject.subject =jsonSubject.section
-         
+         if(!common.isAnArray(jsonSubject.section)){
+            res.status(400) 
+             log.info("[POST]["+req.originalUrl+"]"+"section must be an array . url ="+req.body.subject) ;
+            res.json({ message: 'error with the urlencoded : section must be an array' });
+            return;
           }
-         t;      
-          subject.save(function(err) {         
-              if (err){
-                   log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving. error is : "+err) ;
-                 res.json({ message: 'unexpected error' });
-              }else{
-              res.json({ message: 'Subject created!' });
-            }
-          });
+
+           var subject = new Subject();
+          subject.name = jsonSubject.name;
+         
+          var result={success:[],
+                      error:[]};
+           for (var sectionId of jsonSubject.section){
+              log.info(" === "+sectionId +" == "+subject.section);
+              
+                   var subjectInSection = {id:subject._id,name:subject.name};
+                   Section.findByIdAndUpdate(sectionId,{$push: {subject:subjectInSection}}, function(err,findSection) {
+                      if(err ||common.isEmpty(findSection) ){
+                        result.error.push({'message':'section with id : '+sectionId+' not found in the database. So no update is perform on it'});
+                        log.info("[PUT]["+req.originalUrl+"]"+"can not find the section with id " +sectionId+ " can not update section. error is : "+err) ;
+                      }else{
+
+                        result.success.push({'message':'section with id : '+sectionId+' update'});
+                        subject.section.push(sectionId);
+                        subject.save(function(err) {      
+                        if (err){                 
+                          log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
+                          result.success.push({'message':'subject not created for section with id : '+sectionId});
+                         
+                        }else{
+                            result.success.push({'message':'subject created for section with id : '+sectionId});
+                        }
+                  });
+
+                      }
+                   });
+               
+                   
+              }
+              res.json({ message: 'action perform' });
+          
+      }catch(e){
+         res.json({ message: 'the given url object must be a well formatted json' });
+      }
        
 });
 
+/*
 // add the question  (accessed at PUT http://localhost:3000/api/subject)
 router.put('/subject/changeName',function(req, res) {                 
 
@@ -106,7 +145,7 @@ router.put('/subject/changeName',function(req, res) {
          });
         }     
 });
-
+*/
 // ajoute une section à une matière
 router.put('/subject/addSection',function(req, res) {                 
         try{
@@ -133,27 +172,35 @@ router.put('/subject/addSection',function(req, res) {
                return;
             }else{ 
                log.info("jsonSection = "+jsonSubject.section);
+
               for (var sectionId of jsonSubject.section){
-                  var subjectInSection = {id:subject._id,name:subject.name};
-                     log.info("sectionId = "+sectionId);
+              log.info(" ===> "+(ObjectID(sectionId)) +" === "+sectionId +" == "+subject.section);
+               if(!(new ObjectID(sectionId) in subject.section)){
+                   var subjectInSection = {id:subject._id,name:subject.name};
                    Section.findByIdAndUpdate(sectionId,{$push: {subject:subjectInSection}}, function(err) {
                       if(err){
                         log.info("[PUT]["+req.originalUrl+"]"+"can not find the section with id " +sectionId+ " can not update section. error is : "+err) ;
                       }else{
                         subject.section.push(sectionId);
+                        subject.save(function(err) {      
+                        if (err){                 
+                          log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
+                         
+                        }
+                  });
+
                       }
                    });
+               }else{
+                 log.info("json ok ");
+               }
+                   
               }
-                if(!common.isEmpty(subject.section)){
-                  subject.save(function(err) {      
-                      if (err){                 
-                      log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
-                     res.json({ message: 'unexpected error' });
-                      }else{                    
-                      res.json({ message: 'Section save in subject !'});
-                      }
-                  });
-              }
+                
+                  
+              
+                  res.json({ message: 'Section save in subject !'});
+              
             }
          });
         } 
