@@ -1,5 +1,6 @@
 var express = require('express');
 var Item =require('./item');
+var Subject=require('../subject/subject');
 var router = new express.Router();
 var bole = require('bole');
 var log = bole('item');
@@ -18,7 +19,7 @@ router.get('/items',function(req, res){
         });
 });
 
-
+//get one item by id
 router.get('/item/:item_id',function(req, res) {
      
         Item.findById(req.params.item_id, function(err, item) {
@@ -31,138 +32,101 @@ router.get('/item/:item_id',function(req, res) {
         });
 });
 
-// get the item by id id (accessed at POST http://localhost:3000/api/item/)
+
+// create an item 
 router.post('/item',function(req, res) {
-        
-          if(common.isEmpty(req.body.item)){
-            res.status(400) 
-            log.debug("[POST]["+req.originalUrl+"]"+"the key item to parse is missing. The given is req.body.item ="+req.body.item) ;
-             res.json({ message: 'error with the urlencoded' });
-             return;
-          }
-          var jsonItem = req.body.item;
-          jsonItem= JSON.parse(jsonItem);
-           if(common.isEmpty(jsonItem.name) ){
-            log.debug("[POST]["+req.originalUrl+"]"+"the name  o of item to parse is missing. The given is req.body.item ="+req.body.item) ;
-            res.json({ message: 'error with the urlencoded' });
-            return;
-          }
-                   
-          var item = new Item();
-          item.name = jsonItem.name;  
-          if(!common.isAnArray(jsonItem.section)){
-             item.item =jsonItem.section
-         
-          }
-         t;      
-          item.save(function(err) {         
-              if (err){
-                   log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving. error is : "+err) ;
-                 res.json({ message: 'unexpected error' });
-              }else{
-              res.json({ message: 'Item created!' });
-            }
-          });
-       
-});
-
-// add the question  (accessed at PUT http://localhost:3000/api/item)
-router.put('/item/changeName',function(req, res) {                 
-
-          if(common.isEmpty(req.body.item)){
-            res.status(400) 
-            log.debug("[PUT]["+req.originalUrl+"]"+"the key item to parse is missing. The given is req.body.item ="+req.body.item) ;
-             res.json({ message: 'error with the urlencoded' });
-             return;
-          }
-            var jsonItem = req.body.item;
-            jsonItem= JSON.parse(jsonItem);
-          if(common.isEmpty(jsonItem._id)||common.isEmpty(jsonItem.name)){
-              res.status(400)  
-            log.debug("[PUT]["+req.originalUrl+"]"+"the _id of item or the name to parse is missing. The given is req.body.item ="+req.body.item) ;
-             res.json({ message: 'error with the urlencoded' });
-             return;
-          }else{
-
-          Item.findById(jsonItem._id, function(err, item) {
-            if (err){
-             
-                 log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
-               res.json({ message: 'unexpected error' });
-            }else{ 
-               item.name=jsonItem.name;
-               
-                item.save(function(err) {         
-                    if (err){                 
-                    log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
-                   res.json({ message: 'unexpected error' });
-                    }else{
-                      
-                    res.json({ message: 'Section updated!'});
-                  }
-                });
-            }
-         });
-        }     
-});
-
-// ajoute une section à une matière
-router.put('/item/addSection',function(req, res) {                 
         try{
           if(common.isEmpty(req.body.item)){
             res.status(400) 
-            log.debug("[PUT]["+req.originalUrl+"]"+"the key item to parse is missing. The given is req.body.item ="+req.body.item) ;
-             res.json({ message: 'error with the urlencoded' });
+            log.info("[POST]["+req.originalUrl+"]"+"the key item to parse is missing. The given url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded' });
              return;
           }
-            var jsonItem = req.body.item;
-            jsonItem= JSON.parse(jsonItem);
-          if(common.isEmpty(jsonItem._id)||common.isEmpty(jsonItem.section)){
-              res.status(400)  
-            log.debug("[PUT]["+req.originalUrl+"]"+"the _id of item or the section to parse is missing. The given is req.body.item ="+req.body.item) ;
-             res.json({ message: 'error with the urlencoded' });
-             return;
-          }else{
+          var jsonItem = req.body.item;
+          var serieRegex = new RegExp("[A-D]{1}");
+          var yearRegex= new RegExp("^(19|20)\\d{2}$");
 
-           Item.findById(jsonItem._id, function(err, item) {
-            if (err){
-             res.status(400);
-                 log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
-               res.json({ message: 'the id of the item is not right' });
-               return;
-            }else{ 
-               log.info("jsonSection = "+jsonItem.section);
-              for (var sectionId of jsonItem.section){
-                  var itemInSection = {id:item._id,name:item.name};
-                     log.info("sectionId = "+sectionId);
-                   Section.findByIdAndUpdate(sectionId,{$push: {item:itemInSection}}, function(err) {
-                      if(err){
-                        log.info("[PUT]["+req.originalUrl+"]"+"can not find the section with id " +sectionId+ " can not update section. error is : "+err) ;
-                      }else{
-                        item.section.push(sectionId);
-                      }
-                   });
-              }
-                if(!common.isEmpty(item.section)){
-                  item.save(function(err) {      
+          jsonItem= JSON.parse(jsonItem);
+           if(common.isEmpty(jsonItem.serie) ){
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the serie of item to parse is missing. The given url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded: serie of item to parse is missing' });
+            return;
+          }else if(jsonItem.serie.length !=1 || !(serieRegex.test(jsonItem.serie.toUpperCase()))){
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"serie must have one letter"+req.body.item) ;
+            res.json({ message: 'error with the urlencoded: serie of item must be one letter in [A-D]'});
+            return;
+          }
+          if(common.isEmpty(jsonItem.year) ){
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the year of item to parse is missing. The given url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded: year of item to parse is missing' });
+            return;
+          }else if(jsonItem.year.length !=4 || !(yearRegex.test(jsonItem.year))) {
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the year of item to parse is not correct. The given url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded: year of item to parse is not correct' });
+            return;
+          }
+          if(common.isEmpty(jsonItem.subject) ){
+            res.status(400) 
+            log.info("[POST]["+req.originalUrl+"]"+"the subject of item to parse is missing. The given url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded: subject of item to parse is missing' });
+            return;
+          }
+                            
+         if(!common.isAnArray(jsonItem.subject)){
+            res.status(400) 
+             log.info("[POST]["+req.originalUrl+"]"+"subject must be an array . url ="+req.body.item) ;
+            res.json({ message: 'error with the urlencoded : subject must be an array' });
+            return;
+          }
+
+           var item = new Item();
+          item.serie = jsonItem.serie;
+          item.year = jsonItem.year;
+                  
+          var result={success:[],
+                      error:[]};
+             
+           
+            var query = Subject.find({_id:{$in:jsonItem.subject}});
+           query.exec(function(err,subjects){
+            if(err){
+
+                  result.error.push("something went wrong while requesting the database");
+            }else if(common.isEmpty(subjects)){
+                  log.info("No subject found with the given id");
+                  result.error.push("No subject found with the given id");
+            }else{
+               var itemInSubject = {id:item._id,serie:item.serie,year:item.year};
+                for(var subject of subjects){
+                    subject.item.push(itemInSubject);
+                    item.subject.push(subject._id);
+                    subject.save(function(err) {      
                       if (err){                 
-                      log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
-                     res.json({ message: 'unexpected error' });
-                      }else{                    
-                      res.json({ message: 'Section save in item !'});
+                        log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
+                        
                       }
-                  });
-              }
+                    });
+                }
+
+                item.save(function(err) {      
+                  if (err){                 
+                    log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err);                   
+                  }
+                });
+
             }
-         });
-        } 
-    }catch(e){
-
-      res.status(400);
-       log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error with the request"+e) ;
-      res.json({ message: 'something went wrong check the given json'});
-
-    }    
+           }).then(res.json({message:"OK"}));                   
+    
+          
+      }catch(e){
+         res.json({ message: 'the given url object must be a well formatted json' });
+         log.debug(e);
+      }
+       
 });
 
 module.exports = router

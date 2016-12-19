@@ -20,9 +20,12 @@ app.use(
     res.json({ message: 'exetat! bienvenu!' });   
   })
 );
+
+//these are controller
 app.use(require('./question/index'));
 app.use(require('./section/index'));
 app.use(require('./subject/index'));
+app.use(require('./item/index'));
 
 
 // FINALLY, use any error handlers

@@ -22,6 +22,7 @@ router.get('/subjects',function(req, res){
 });
 
 
+//get one subject by id
 router.get('/subject/:subject_id',function(req, res) {
      
         Subject.findById(req.params.subject_id, function(err, subject) {
@@ -34,7 +35,7 @@ router.get('/subject/:subject_id',function(req, res) {
         });
 });
 
-// get the subject by id id (accessed at POST http://localhost:3000/api/subject/)
+// create a subject
 router.post('/subject',function(req, res) {
         try{
           if(common.isEmpty(req.body.subject)){
@@ -71,7 +72,7 @@ router.post('/subject',function(req, res) {
           var result={success:[],
                       error:[]};
              
-           var subjectInSection = {id:subject._id,name:subject.name};
+           
             var query = Section.find({_id:{$in:jsonSubject.section}});
            query.exec(function(err,sections){
             if(err){

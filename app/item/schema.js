@@ -2,12 +2,12 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var itemSchema   = new Schema({
-   serie:{type:String, required:true},
+   serie:{type:String, required:true,uppercase: true, trim: true},
    year:{type:Number, required:true},
    subject:[Schema.ObjectId],
    question:[{
               id:{type:Schema.ObjectId,required:true},
-              index:{type :Number, required: true},
+              index:{type :Number, required: true,min:1, max:2},
               libelle:{type:String, required:true},
               answer:[{
                 id:{type:Schema.ObjectId,required:true},
