@@ -94,18 +94,22 @@ router.post('/item',function(req, res) {
             var query = Subject.find({_id:{$in:jsonItem.subject}});
            query.exec(function(err,subjects){
             if(err){
-
+                  res.status(400);
                   result.error.push("something went wrong while requesting the database");
+                   res.json({message:"Operation completed with error on database"});
             }else if(common.isEmpty(subjects)){
+              res.status(400);
                   log.info("No subject found with the given id");
                   result.error.push("No subject found with the given id");
+                   res.json({message:"no subject found"});
             }else{
                var itemInSubject = {id:item._id,serie:item.serie,year:item.year};
                 for(var subject of subjects){
                     subject.item.push(itemInSubject);
                     item.subject.push(subject._id);
                     subject.save(function(err) {      
-                      if (err){                 
+                      if (err){   
+                        res.status(400);              
                         log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
                         
                       }
@@ -113,13 +117,14 @@ router.post('/item',function(req, res) {
                 }
 
                 item.save(function(err) {      
-                  if (err){                 
+                  if (err){   
+                  res.status(400);              
                     log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err);                   
                   }
                 });
-
+                res.json({message:"Operation completed"});
             }
-           }).then(res.json({message:"OK"}));                   
+           });                  
     
           
       }catch(e){
