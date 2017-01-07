@@ -13,6 +13,7 @@ router.get('/sections',function(req, res){
                log.debug("[GET]["+req.originalUrl+"]"+"unexepected error while searching by all sections. error is : "+err) ;
                res.json({ message: 'unexpected error' });
             }else{
+               log.debug("[GET]["+req.originalUrl+"]"+"GET SECTION OK ") ;
             res.json(sections);
           }
         });
@@ -26,7 +27,8 @@ router.get('/section/:section_id',function(req, res) {
                  log.debug("[GET]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
                res.json({ message: 'unexpected error' });
             }else{
-               res.json(section);
+            log.debug("[GET]["+req.originalUrl+"]"+"GET SECTION OK ") ;
+            res.json(section);
           }
         });
 });
@@ -35,8 +37,8 @@ router.get('/section/:section_id',function(req, res) {
 router.post('/section',function(req, res) {
         
           if(common.isEmpty(req.body.section)){
-            res.status(400) 
-            log.debug("[POST]["+req.originalUrl+"]"+"the key section to parse is missing. The given is req.body.section ="+req.body.section) ;
+            res.status(400) ;
+            log.info("[POST]["+req.originalUrl+"]"+" the key section to parse is missing. The given is req.body.section ="+req.body.section) ;
              res.json({ message: '[1] error with the urlencoded' });
              return;
           }
@@ -52,11 +54,12 @@ router.post('/section',function(req, res) {
                    log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving. error is : "+err) ;
                  res.json({ message: '[2] unexpected error' });
               }else{
+              log.info("[POST]["+req.originalUrl+"]"+"POST SECTION SAVED ") ;
               res.json({ message: 'Section created!' });
             }
           });
         }else{
-          log.debug("[POST]["+req.originalUrl+"]"+"the name of section to parse is missing. The given is req.body.section ="+req.body.section) ;
+          log.info("[POST]["+req.originalUrl+"]"+"the name of section to parse is missing. The given is req.body.section ="+req.body.section) ;
           res.json({ message: '[3] error with the urlencoded' });
         }
 });

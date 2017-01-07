@@ -5,7 +5,7 @@ var DEVELOPMENT = process.env.NODE_ENV === 'developpent'|true
 if (DEVELOPMENT) {
 
   config.express = {
-  port: process.env.EXPRESS_PORT || 3000,
+  port: process.env.EXPRESS_PORT || 3300,
   ip: '127.0.0.1'
   }
 
