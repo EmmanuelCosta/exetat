@@ -9,6 +9,6 @@ var itemSchema   = new Schema({
    
 });
 
-itemSchema.index({serie:1,year:1,subject:1},{unique:true});
+itemSchema.index({serie:1,year:1,subject:1},{unique:true,dropDups : true});
 
 module.exports=itemSchema;

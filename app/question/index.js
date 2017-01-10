@@ -10,6 +10,7 @@ var common=require('../common/common');
 router.get('/questions',function(req, res){
       Question.find(function(err, questions) {
             if (err){
+               res.status(400);
                log.debug("[GET]["+req.originalUrl+"]"+"unexepected error while searching by all questions. error is : "+err) ;
                res.json({ message: 'unexpected error' });
             }else{
@@ -18,17 +19,35 @@ router.get('/questions',function(req, res){
         });
 });
 
+
+
 //get one question by id
 router.get('/question/:question_id',function(req, res) {
      
         Question.findById(req.params.question_id, function(err, question) {
             if (err){
+               res.status(400);
                  log.debug("[GET]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
                res.json({ message: 'unexpected error' });
             }else{
                res.json(question);
           }
         });
+});
+
+
+
+router.get('/question/getNextIndex/:item_id',function(req, res) {
+      Question.find({item: req.params.item_id},'index', function(err, questions) {
+            if (err){
+               res.status(400);
+                 log.debug("[GET]["+req.originalUrl+"]"+"unexepected error while searching by id. error is : "+err) ;
+               res.json({ message: 'unexpected error' });
+            }else{               
+                    res.json({"next":questions.length+1}); 
+            }
+        });
+        
 });
 
 // create an question 

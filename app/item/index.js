@@ -107,21 +107,30 @@ router.post('/item',function(req, res) {
                 for(var subject of subjects){
                     subject.item.push(itemInSubject);
                     item.subject.push(subject._id);
-                    subject.save(function(err) {      
-                      if (err){   
-                        res.status(400);              
-                        log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err) ;
+                    item.save(subject,function(err) {      
+                    if (err){   
+                      res.status(400);              
+                        log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving item by id. error is : "+err);                   
                         
+                      }else{
+                    log.debug("[POST]["+req.originalUrl+"] item saved");                   
+
+                        subject.save(function(err) {      
+                          if (err){   
+                            res.status(400);              
+                            log.debug("[POST]["+req.originalUrl+"]"+"unexepected error while saving subject by id. error is : "+err) ;
+                            
+                          }else{
+                             log.debug("[POST]["+req.originalUrl+"] subject saved");
+                          }
+
+                        });
                       }
                     });
+                    
                 }
 
-                item.save(function(err) {      
-                  if (err){   
-                  res.status(400);              
-                    log.debug("[PUT]["+req.originalUrl+"]"+"unexepected error while saving by id. error is : "+err);                   
-                  }
-                });
+                
                 res.json({message:"Operation completed"});
             }
            });                  
