@@ -8,7 +8,7 @@ if (DEVELOPMENT) {
 //mongodb://<dbuser>:<dbpassword>@ds133338.mlab.com:33338/heroku_6j3rpf1c
 
   config.express = {
-  port: process.env.EXPRESS_PORT || 3300,
+  port: process.env.PORT || 3300,
   ip: process.env.EXPRESS_HOST || '127.0.0.1'
   }
 
@@ -16,7 +16,7 @@ if (DEVELOPMENT) {
     port: process.env.MONGODB_PORT || 27017,
     host: process.env.MONGODB_HOST || 'localhost'
   }
-  config.http=process.env.HTTP_HOST || 'http://localhost:3000'
+  config.http=process.env.HTTP_HOST+':'+process.env.MONGODB_PORT || 'http://localhost:3000'
   config.db=process.env.MONGODB_URI || 'mongodb://localhost/exetat'
 
 }else if(PRODUCTION){

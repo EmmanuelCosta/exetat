@@ -18,7 +18,7 @@ var log = bole('server')
 
 log.info('server process starting')
 
-
+log(" config.http="+ config.http)
 
 // Note that there's not much logic in this file.
 // The server should be mostly "glue" code to set things up and
