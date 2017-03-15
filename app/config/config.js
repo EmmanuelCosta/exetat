@@ -22,6 +22,6 @@ if(PRODUCTION){
     host: process.env.MONGODB_HOST || 'localhost'
   }
   config.http=process.env.HTTP_HOST || 'http://localhost:3000'
-  config.db=process.env.MONGODB_HOME || 'mongodb://localhost/exetat'
+  config.db=process.env.MONGODB_URI || 'mongodb://localhost/exetat'
 
 }
