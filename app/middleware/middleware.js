@@ -2,13 +2,14 @@ var express    = require('express');
 var router = express.Router();              // get an instance of the express Router
 var bole = require('bole');
 var log = bole('middleware');
+var config = require('../config/config')
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
     // do logging if needed
     
    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'config.http');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

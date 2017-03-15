@@ -28,6 +28,12 @@ app.use(require('./subject/index'));
 app.use(require('./item/index'));
 app.use(require('./question/index'));
 
+//hello router for testing
+router.get('/hello',function(req, res){
+      res.write("<p>hello exetat</p>");
+      res.end();
+});
+
 
 // FINALLY, use any error handlers
 //app.use(require('./errors/not-found'));
