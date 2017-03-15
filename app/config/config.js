@@ -1,13 +1,8 @@
 var config = module.exports
 var PRODUCTION = process.env.NODE_ENV === 'production'
-var DEVELOPMENT = process.env.NODE_ENV === 'developpent'|true
+var DEVELOPMENT = process.env.NODE_ENV === 'development'|true
 
-if(PRODUCTION){
-//TODO
-// config.db same deal
-// config.email etc
-// config.log
-}else if (DEVELOPMENT) {
+if (DEVELOPMENT) {
 //ds133338.mlab.com:33338/heroku_6j3rpf1c -u <dbuser> -p <dbpassword>
 
 //mongodb://<dbuser>:<dbpassword>@ds133338.mlab.com:33338/heroku_6j3rpf1c
@@ -24,4 +19,9 @@ if(PRODUCTION){
   config.http=process.env.HTTP_HOST || 'http://localhost:3000'
   config.db=process.env.MONGODB_URI || 'mongodb://localhost/exetat'
 
+}else if(PRODUCTION){
+//TODO
+// config.db same deal
+// config.email etc
+// config.log
 }
