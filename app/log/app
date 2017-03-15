@@ -1,0 +1,2 @@
+{"time":"2017-03-15T17:35:18.712Z","hostname":"emmanuelBC-PC","pid":8884,"level":"info","name":"server","message":"server process starting"}
+{"time":"2017-03-15T17:35:18.733Z","hostname":"emmanuelBC-PC","pid":8884,"level":"info","name":"server","message":"express is listening on http://127.0.0.1:3300"}

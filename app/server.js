@@ -11,7 +11,7 @@ mongoose.Promise = require('bluebird');
 var bole = require('bole')
 
 bole.output([
-  { level: 'debug', stream: fs.createWriteStream('./app/log/app.log') },
+  { level: 'debug', stream: fs.createWriteStream('./app/log/app') },
   { level: 'info', stream: process.stdout }
 ])
 var log = bole('server')
