@@ -16,7 +16,9 @@ if (DEVELOPMENT) {
     port: process.env.MONGODB_PORT || 27017,
     host: process.env.MONGODB_HOST || 'localhost'
   }
-  config.http=process.env.HTTP_HOST+':'+process.env.MONGODB_PORT || 'http://localhost:3000'
+  var accept_Host=process.env.HTTP_HOST|| 'http://localhost'
+   var accept_Port=process.env.HTTP_PORT|| '4200'
+  config.http=accept_Host+':'+accept_Port
   config.db=process.env.MONGODB_URI || 'mongodb://localhost/exetat'
 
 }else if(PRODUCTION){

@@ -9,8 +9,8 @@ router.use(function(req, res, next) {
     // do logging if needed
     
    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'config.http');
-
+    res.setHeader('Access-Control-Allow-Origin', 'https://emmanuelcosta.github.io/exetatweb2/');
+    log.info("====> "+config.http);
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
